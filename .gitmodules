@@ -1,8 +1,5 @@
-[submodule "vendor/kokkos"]
-	path = vendor/kokkos
-	url = git@github.com:kokkos/kokkos.git
-[submodule "vendor/benchmark"]
-	path = vendor/benchmark
+[submodule "kokkos_game_of_life/vendor/benchmark"]
+	path = kokkos_game_of_life/vendor/benchmark
 	url = git@github.com:google/benchmark.git
 [submodule "kokkos_game_of_life/vendor/kokkos"]
 	path = kokkos_game_of_life/vendor/kokkos
