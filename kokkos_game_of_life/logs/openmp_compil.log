@@ -1,0 +1,74 @@
+-- Setting policy CMP0074 to use <Package>_ROOT variables
+-- The project name is: Kokkos
+-- Using -std=gnu++17 for C++17 extensions as feature
+-- Built-in Execution Spaces:
+--     Device Parallel: NoTypeDefined
+--     Host Parallel: Kokkos::OpenMP
+--       Host Serial: SERIAL
+-- 
+-- Architectures:
+--  SKX
+-- Kokkos Devices: OPENMP;SERIAL, Kokkos Backends: OPENMP;SERIAL
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build
+/gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -S/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life -B/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build --check-build-system CMakeFiles/Makefile.cmake 0
+/gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_progress_start /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/CMakeFiles /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build//CMakeFiles/progress.marks
+make  -f CMakeFiles/Makefile2 all
+make[1] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make  -f vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/build.make vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/depend
+make[2] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+cd /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build && /gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_depends "Unix Makefiles" /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/vendor/kokkos/core/src /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/DependInfo.cmake --color=
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/OpenMP/Kokkos_OpenMP_Exec.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/OpenMP/Kokkos_OpenMP_Task.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/desul/src/Lock_Array_CUDA.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/desul/src/Lock_Array_HIP.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_CPUDiscovery.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Core.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Error.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_ExecPolicy.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_HostBarrier.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_HostSpace.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_HostSpace_deepcopy.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_HostThreadTeam.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_MemoryPool.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_MemorySpace.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_NumericTraits.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Profiling.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Serial.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Serial_Task.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_SharedAlloc.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Spinwait.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_Stacktrace.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Dependencies file "vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/impl/Kokkos_hwloc.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target kokkoscore
+make[2] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make  -f vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/build.make vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/build
+make[2] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make[2]: Rien à faire pour « vendor/kokkos/core/src/CMakeFiles/kokkoscore.dir/build ».
+make[2] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+[ 85%] Built target kokkoscore
+make  -f vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/build.make vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/depend
+make[2] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+cd /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build && /gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_depends "Unix Makefiles" /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/vendor/kokkos/containers/src /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/containers/src /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/DependInfo.cmake --color=
+Dependencies file "vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/impl/Kokkos_UnorderedMap_impl.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target kokkoscontainers
+make[2] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make  -f vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/build.make vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/build
+make[2] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make[2]: Rien à faire pour « vendor/kokkos/containers/src/CMakeFiles/kokkoscontainers.dir/build ».
+make[2] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+[ 92%] Built target kokkoscontainers
+make  -f CMakeFiles/benchmark_game_of_life.dir/build.make CMakeFiles/benchmark_game_of_life.dir/depend
+make[2] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+cd /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build && /gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_depends "Unix Makefiles" /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/CMakeFiles/benchmark_game_of_life.dir/DependInfo.cmake --color=
+Dependencies file "CMakeFiles/benchmark_game_of_life.dir/benchmark_game_of_life.cpp.o.d" is newer than depends file "/gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/CMakeFiles/benchmark_game_of_life.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target benchmark_game_of_life
+make[2] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make  -f CMakeFiles/benchmark_game_of_life.dir/build.make CMakeFiles/benchmark_game_of_life.dir/build
+make[2] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+make[2]: Rien à faire pour « CMakeFiles/benchmark_game_of_life.dir/build ».
+make[2] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+[100%] Built target benchmark_game_of_life
+make[1] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build »
+/gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_progress_start /gpfs/users/anquetilm/kokkos_game_of_life/kokkos_game_of_life/build/CMakeFiles 0

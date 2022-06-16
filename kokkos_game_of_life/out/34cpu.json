@@ -1,0 +1,96 @@
+{
+  "context": {
+    "date": "2022-06-16T10:08:07+02:00",
+    "host_name": "node044",
+    "executable": "./benchmark_game_of_life",
+    "num_cpus": 40,
+    "mhz_per_cpu": 2100,
+    "cpu_scaling_enabled": true,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 32768,
+        "num_sharing": 1
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 32768,
+        "num_sharing": 1
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 1048576,
+        "num_sharing": 1
+      },
+      {
+        "type": "Unified",
+        "level": 3,
+        "size": 28835840,
+        "num_sharing": 20
+      }
+    ],
+    "load_avg": [18.9,16.68,13.54],
+    "library_build_type": "release"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_naive/16384/manual_time",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_naive/16384/manual_time",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 6.6714888670000000e+09,
+      "cpu_time": 1.9682865299999985e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_portable/16384/manual_time",
+      "family_index": 1,
+      "per_family_instance_index": 0,
+      "run_name": "BM_portable/16384/manual_time",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 6.5573556750000000e+09,
+      "cpu_time": 1.9337355399999902e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_no_ghost/16384/manual_time",
+      "family_index": 2,
+      "per_family_instance_index": 0,
+      "run_name": "BM_no_ghost/16384/manual_time",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 5.2659958380000000e+09,
+      "cpu_time": 1.5529538200000203e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_final/16384/manual_time",
+      "family_index": 3,
+      "per_family_instance_index": 0,
+      "run_name": "BM_final/16384/manual_time",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 2.9774416020000000e+09,
+      "cpu_time": 8.7329524999997690e+07,
+      "time_unit": "ns"
+    }
+  ]
+}

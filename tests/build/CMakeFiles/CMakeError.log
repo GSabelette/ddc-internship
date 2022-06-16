@@ -1,0 +1,61 @@
+Performing C++ SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_b9ac7/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_b9ac7.dir/build.make CMakeFiles/cmTC_b9ac7.dir/build
+gmake[1] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp »
+Building CXX object CMakeFiles/cmTC_b9ac7.dir/src.cxx.o
+/gpfs/softs/spack/opt/spack/linux-centos7-haswell/gcc-4.8.5/gcc-11.2.0-mpv3i3uebzvnvz7wxn6ywysd5hftycj3/bin/g++ -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_b9ac7.dir/src.cxx.o -c /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_b9ac7
+/gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b9ac7.dir/link.txt --verbose=1
+/gpfs/softs/spack/opt/spack/linux-centos7-haswell/gcc-4.8.5/gcc-11.2.0-mpv3i3uebzvnvz7wxn6ywysd5hftycj3/bin/g++ CMakeFiles/cmTC_b9ac7.dir/src.cxx.o -o cmTC_b9ac7 
+CMakeFiles/cmTC_b9ac7.dir/src.cxx.o : Dans la fonction « main » :
+src.cxx:(.text+0x2d) : référence indéfinie vers « pthread_create »
+src.cxx:(.text+0x39) : référence indéfinie vers « pthread_detach »
+src.cxx:(.text+0x45) : référence indéfinie vers « pthread_cancel »
+src.cxx:(.text+0x56) : référence indéfinie vers « pthread_join »
+src.cxx:(.text+0x6a) : référence indéfinie vers « pthread_atfork »
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [cmTC_b9ac7] Erreur 1
+gmake[1] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp »
+gmake: *** [cmTC_b9ac7/fast] Erreur 2
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_74df2/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_74df2.dir/build.make CMakeFiles/cmTC_74df2.dir/build
+gmake[1] : on entre dans le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp »
+Building CXX object CMakeFiles/cmTC_74df2.dir/CheckFunctionExists.cxx.o
+/gpfs/softs/spack/opt/spack/linux-centos7-haswell/gcc-4.8.5/gcc-11.2.0-mpv3i3uebzvnvz7wxn6ywysd5hftycj3/bin/g++   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_74df2.dir/CheckFunctionExists.cxx.o -c /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_74df2
+/gpfs/softs/spack_0.17/opt/spack/linux-centos7-cascadelake/gcc-11.2.0/cmake-3.21.4-7ggmda7wvxddqzhvi5goo7pbwvoy7u4e/bin/cmake -E cmake_link_script CMakeFiles/cmTC_74df2.dir/link.txt --verbose=1
+/gpfs/softs/spack/opt/spack/linux-centos7-haswell/gcc-4.8.5/gcc-11.2.0-mpv3i3uebzvnvz7wxn6ywysd5hftycj3/bin/g++  -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_74df2.dir/CheckFunctionExists.cxx.o -o cmTC_74df2  -lpthreads 
+/usr/bin/ld : ne peut trouver -lpthreads
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [cmTC_74df2] Erreur 1
+gmake[1] : on quitte le répertoire « /gpfs/users/anquetilm/kokkos_game_of_life/tests/build/CMakeFiles/CMakeTmp »
+gmake: *** [cmTC_74df2/fast] Erreur 2
+
+
+

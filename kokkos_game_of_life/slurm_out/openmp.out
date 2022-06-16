@@ -1,0 +1,20 @@
+BM_no_ghost/16384/manual_time 5271543102 ns    142733944 ns            1
+BM_final/16384/manual_time    2973901112 ns     80335772 ns            1
+BM_no_ghost/16384/manual_time 5305322227 ns    139118535 ns            1
+------------------------------------------------------------------------
+Benchmark                              Time             CPU   Iterations
+------------------------------------------------------------------------
+BM_naive/16384/manual_time    6664250985 ns    171768675 ns            1
+BM_final/16384/manual_time    3010223260 ns     79007357 ns            1
+------------------------------------------------------------------------
+Benchmark                              Time             CPU   Iterations
+------------------------------------------------------------------------
+BM_naive/16384/manual_time    6676212869 ns    167356039 ns            1
+BM_no_ghost/16384/manual_time 13884435873 ns    421640812 ns            1
+BM_portable/16384/manual_time 6580525876 ns    169430113 ns            1
+BM_portable/16384/manual_time 6577750971 ns    163908324 ns            1
+BM_final/16384/manual_time    7898244659 ns    239344849 ns            1
+BM_no_ghost/16384/manual_time 5276594289 ns    136459893 ns            1
+BM_final/16384/manual_time    2974836493 ns     76579491 ns            1
+BM_no_ghost/16384/manual_time 5279747704 ns    131971360 ns            1
+BM_final/16384/manual_time    2977793850 ns     74308359 ns            1
