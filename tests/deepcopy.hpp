@@ -1,6 +1,8 @@
 #include <Kokkos_Core.hpp>
 #include <type_traits>
 #include <stdio.h>
+#include <vector>
+#include <algorithm>
 
 #define cudaCheckErrors(msg) \
     do { \
@@ -14,6 +16,13 @@
         } \
     } while (0)
 
+template<typename T> struct remove_all {
+    typedef T type;
+};
+template<typename T> struct remove_all<T*> {
+    typedef typename remove_all<T>::type type;
+};
+
 using DefaultSpace = Kokkos::HostSpace;
 
 template <typename T>
@@ -23,12 +32,124 @@ struct is_default_handled_type : std::integral_constant<bool, (std::is_arithmeti
 template <typename T>
 inline constexpr bool is_default_handled_type_v = is_default_handled_type<T>::value;
 
-// template <typename T>
-// struct is_not_default_handled_type : std::integral_constant<bool, !(std::is_arithmetic<T>::value || 
-//     std::is_pointer<T>::value || Kokkos::is_view<T>::value)> {};
+namespace Deepcopy {
+    std::vector<void*> host_queue {};
+    std::vector<void*> device_queue {};
 
-// template <typename T>
-// inline constexpr bool is_not_default_handled_type_v = is_not_default_handled_type<T>::value;
+    void print_queues() {
+        printf("host_queue : ");
+        for (auto& p : host_queue) printf("%p, ", p);
+        printf("\ndevice_queue : ");
+        for (auto& p : device_queue) printf("%p, ", p);
+        printf("\n");
+    }
+
+    template <class MemorySpace,
+              std::enable_if_t<std::is_same_v<MemorySpace, Kokkos::HostSpace>, bool> = true>
+    void add_to_queue(void* ptr) {
+        host_queue.push_back(ptr);
+    }
+
+    template <class MemorySpace,
+              std::enable_if_t<std::is_same_v<MemorySpace, Kokkos::CudaSpace>, bool> = true>
+    void add_to_queue(void* ptr) {
+        device_queue.push_back(ptr);
+    }
+
+    template <class MemorySpace, 
+              std::enable_if_t<std::is_same_v<MemorySpace, Kokkos::HostSpace>, bool> = true>
+    void free(void* ptr) {
+        std::vector<void*>::iterator pos = std::find(host_queue.begin(), host_queue.end(), ptr);
+        if (pos != host_queue.end()) {
+            host_queue.erase(pos);
+            printf("freed on CPU : %p\n", ptr);
+            Kokkos::kokkos_free<MemorySpace>(ptr);   
+        }
+    }
+
+    template <class MemorySpace, 
+              std::enable_if_t<std::is_same_v<MemorySpace, Kokkos::CudaSpace>, bool> = true>
+    void free(void* ptr) {
+        std::vector<void*>::iterator pos = std::find(device_queue.begin(), device_queue.end(), ptr);
+        if (pos != device_queue.end()) {
+            device_queue.erase(pos);
+            printf("freed on GPU : %p\n", ptr);
+            Kokkos::kokkos_free<MemorySpace>(ptr);   
+        }
+    }
+
+    void free(void* ptr) {
+        std::vector<void*>::iterator pos = std::find(host_queue.begin(), host_queue.end(), ptr);
+        if (pos != host_queue.end()) {
+            host_queue.erase(pos);
+            printf("freed on CPU : %p\n", ptr);
+            Kokkos::kokkos_free<Kokkos::HostSpace>(ptr);   
+        } else {
+            std::vector<void*>::iterator pos = std::find(device_queue.begin(), device_queue.end(), ptr);
+            if (pos != device_queue.end()) {
+                device_queue.erase(pos);
+                printf("freed on GPU : %p\n", ptr);
+                Kokkos::kokkos_free<Kokkos::CudaSpace>(ptr);   
+            }
+        }
+    }
+
+    void clear() {
+        std::for_each(host_queue.begin(), host_queue.end(), Kokkos::kokkos_free<Kokkos::HostSpace>);
+        std::for_each(device_queue.begin(), device_queue.end(), Kokkos::kokkos_free<Kokkos::CudaSpace>);
+        host_queue.clear();
+        device_queue.clear();
+    }
+};
+
+
+template <typename ViewType>
+std::size_t get_size(const ViewType& v) {
+    std::size_t size = sizeof(typename ViewType::value_type);
+    for (int i = 0; i < ViewType::rank; size *= v.extent(i), ++i);
+    return size;
+}
+
+template <typename data_type, class DestSpace = DefaultSpace>
+using DeepcopyableView = Kokkos::View<data_type, DestSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
+
+template <class DestSpace, typename ViewType>
+typename ViewType::value_type* deepcopyable_view_alloc(ViewType src_view) {
+    typename ViewType::value_type* ptr = static_cast<typename ViewType::value_type*>(Kokkos::kokkos_malloc<DestSpace>(get_size(src_view)));
+    Deepcopy::add_to_queue<DestSpace>(ptr);
+    return ptr;
+}
+
+template <class DestSpace, typename data_type>
+typename remove_all<data_type>::type* deepcopyable_view_alloc(std::size_t size) {
+    using ptr_type = typename remove_all<data_type>::type*;
+    ptr_type ptr = static_cast<ptr_type>(Kokkos::kokkos_malloc<DestSpace>(size));
+    Deepcopy::add_to_queue<DestSpace>(ptr);
+    return ptr;
+}
+
+template <typename data_type, class DestSpace = DefaultSpace, typename... Args>
+DeepcopyableView<data_type, DestSpace> deepcopyable_view(std::size_t size, Args... args) {
+    DeepcopyableView<data_type, DestSpace> v(deepcopyable_view_alloc<DestSpace, data_type>(size), args...);
+    return v;
+}
+
+
+template <typename Lambda, typename ViewType, 
+          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::HostSpace>, bool> = true>
+void fill_view(ViewType& v, Lambda&& f) {
+    f(v);
+}
+
+template <typename Lambda, typename ViewType,
+          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::CudaSpace>, bool> = true>
+void fill_view(ViewType& v, Lambda&& f) {
+    typename ViewType::HostMirror h_v;
+    h_v = Kokkos::create_mirror_view(v);
+    f(h_v);
+    Kokkos::deep_copy(v, h_v); 
+}
+
 
 template <class DestSpace, typename T>
 T* empty_alloc() {
@@ -39,6 +160,7 @@ template <class DestSpace, typename T>
 T* empty_alloc(const std::size_t n) {
     return static_cast<T*>(Kokkos::kokkos_malloc<DestSpace>(sizeof(T) * n));
 }
+
 
 template <typename T_dst, typename T_src = T_dst>
 void shallow_copy(T_dst* dst, const T_src& src) {
@@ -51,6 +173,7 @@ void shallow_copy(T_dst* dst, const T_src& src, const std::size_t n) {
     cudaMemcpy(dst, &src, sizeof(T_src) * n, cudaMemcpyDefault);
     cudaCheckErrors("deepcopy");
 }
+
 
 // Arithmetic types.
 template <class DestSpace, typename T_dst, typename T_src = T_dst, 
@@ -70,7 +193,7 @@ void deepcopy(T_dst dst, const T_src& src) {
     deepcopy<DestSpace, T_dst_plain, T_src_plain>(*dst, *src);
 }
 
-// Array types.
+// Array of simple types.
 template <class DestSpace, typename T_dst, typename T_src = T_dst, 
           std::enable_if_t<std::is_pointer<T_dst>::value, bool> = true>
 void deepcopy(T_dst* dst, const T_src& src, const std::size_t n) {
@@ -89,7 +212,7 @@ void deepcopy(T_dst* dst, const T_src& src) {
 }
 
 // User types. 
-template <class DestSpace, typename T_dst, typename T_src = T_dst,
+template <class DestSpace, typename T_dst, typename T_src,
           std::enable_if_t<!is_default_handled_type_v<T_dst>, bool> = true>
 void deepcopy(T_dst* dst, const T_src& src) {
     T_dst tmp(src);
