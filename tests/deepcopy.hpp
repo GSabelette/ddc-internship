@@ -150,6 +150,19 @@ void fill_view(ViewType& v, Lambda&& f) {
     Kokkos::deep_copy(v, h_v); 
 }
 
+template <class DestSpace, typename Lambda, typename T,
+          std::enable_if_t<std::is_same_v<DestSpace, Kokkos::HostSpace>, bool> = true>
+void fill_array(T* ptr, Lambda&& f, std::size_t array_size) {
+    f(ptr);
+}
+
+template <class DestSpace, typename Lambda, typename T,
+          std::enable_if_t<std::is_same_v<DestSpace, Kokkos::CudaSpace>, bool> = true>
+void fill_array(T* ptr, Lambda&& f, std::size_t array_size) {
+    T* tmp = new T;
+    f(tmp);
+    cudaMemcpy(ptr, tmp, array_size, cudaMemcpyHostToDevice);
+}
 
 template <class DestSpace, typename T>
 T* empty_alloc() {
