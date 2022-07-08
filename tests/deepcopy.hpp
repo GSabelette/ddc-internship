@@ -4,6 +4,12 @@
 #include <vector>
 #include <algorithm>
 
+#if defined (__CUDA_ARCH__)
+using CurrentSpace = Kokkos::CudaSpace;
+#else
+using CurrentSpace = Kokkos::HostSpace;
+#endif
+
 #define cudaCheckErrors(msg) \
     do { \
         cudaError_t __err = cudaGetLastError(); \
@@ -108,49 +114,68 @@ namespace Deepcopy {
         host_queue.clear();
         device_queue.clear();
     }
+
+
+    template <typename data_type, class DestSpace>
+    using View = Kokkos::View<data_type, DestSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
+
+    template <class DestSpace, typename ViewType>
+    typename ViewType::value_type* view_alloc(ViewType src_view) {
+        typename ViewType::value_type* ptr = static_cast<typename ViewType::value_type*>(Kokkos::kokkos_malloc<DestSpace>(get_size(src_view)));
+        Deepcopy::add_to_queue<DestSpace>(ptr);
+        return ptr;
+    }
+
+    template <class DestSpace, typename data_type>
+    typename remove_all<data_type>::type* view_alloc(std::size_t size) {
+        using ptr_type = typename remove_all<data_type>::type*;
+        ptr_type ptr = static_cast<ptr_type>(Kokkos::kokkos_malloc<DestSpace>(size));
+        Deepcopy::add_to_queue<DestSpace>(ptr);
+        return ptr;
+    }
+
+    template <typename data_type, class DestSpace = DefaultSpace, typename... Args>
+    View<data_type, DestSpace> view(std::size_t size, Args... args) {
+        View<data_type, DestSpace> v(view_alloc<DestSpace, data_type>(size), args...);
+        return v;
+    }
 };
 
-template <typename data_type>
-using DeepcopyableViewType = Kokkos::View<data_type, Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
-
-template <typename data_type, class DestSpace>
-using DeepcopyableView = Kokkos::View<data_type, DestSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
-
-template <class DestSpace, typename ViewType>
-typename ViewType::value_type* deepcopyable_view_alloc(ViewType src_view) {
-    typename ViewType::value_type* ptr = static_cast<typename ViewType::value_type*>(Kokkos::kokkos_malloc<DestSpace>(get_size(src_view)));
-    Deepcopy::add_to_queue<DestSpace>(ptr);
-    return ptr;
-}
-
-template <class DestSpace, typename data_type>
-typename remove_all<data_type>::type* deepcopyable_view_alloc(std::size_t size) {
-    using ptr_type = typename remove_all<data_type>::type*;
-    ptr_type ptr = static_cast<ptr_type>(Kokkos::kokkos_malloc<DestSpace>(size));
-    Deepcopy::add_to_queue<DestSpace>(ptr);
-    return ptr;
-}
-
-template <typename data_type, class DestSpace = DefaultSpace, typename... Args>
-DeepcopyableView<data_type, DestSpace> deepcopyable_view(std::size_t size, Args... args) {
-    DeepcopyableView<data_type, DestSpace> v(deepcopyable_view_alloc<DestSpace, data_type>(size), args...);
-    return v;
-}
 
 // Fill methods to initialize arrays/views independently of memory space
+// CPU to CPU.
 template <typename Lambda, typename ViewType, 
-          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::HostSpace>, bool> = true>
-__host__ __device__ void fill_view(ViewType& v, Lambda&& f) {
+          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::HostSpace>
+          && std::is_same_v<CurrentSpace, Kokkos::HostSpace>, bool> = true>
+void fill_view(ViewType& v, Lambda&& f) {
     f(v);
 }
 
+//GPU to CPU. Just used as a check so CPU to CPU is not misscalled.
+template <typename Lambda, typename ViewType, 
+          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::HostSpace>
+          && std::is_same_v<CurrentSpace, Kokkos::CudaSpace>, bool> = true>
+__device__ void fill_view(ViewType& v, Lambda&& f) {
+    return;
+}
+
+// CPU to GPU.
 template <typename Lambda, typename ViewType,
-          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::CudaSpace>, bool> = true>
-__host__ __device__ void fill_view(ViewType& v, Lambda&& f) {
+          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::CudaSpace>
+          && std::is_same_v<CurrentSpace, Kokkos::HostSpace>, bool> = true>
+void fill_view(ViewType& v, Lambda&& f) {
     typename ViewType::HostMirror h_v;
     h_v = Kokkos::create_mirror_view(v);
     f(h_v);
     Kokkos::deep_copy(v, h_v); 
+}
+
+// GPU to GPU. Just used as a check so CPU to GPU is not misscalled.
+template <typename Lambda, typename ViewType,
+          std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::CudaSpace>
+          && std::is_same_v<CurrentSpace, Kokkos::CudaSpace>, bool> = true>
+__device__ void fill_view(ViewType& v, Lambda&& f) {
+    return;
 }
 
 template <class DestSpace, typename Lambda, typename T,
@@ -164,7 +189,7 @@ template <class DestSpace, typename Lambda, typename T,
 void fill_array(T* ptr, Lambda&& f, std::size_t array_size) {
     T* tmp = new T;
     f(tmp);
-    cudaMemcpy(ptr, tmp, array_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(ptr, tmp, array_size, cudaMemcpyDefault);
 }
 
 template <class DestSpace, typename T>
