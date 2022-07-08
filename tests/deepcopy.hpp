@@ -32,6 +32,14 @@ struct is_default_handled_type : std::integral_constant<bool, (std::is_arithmeti
 template <typename T>
 inline constexpr bool is_default_handled_type_v = is_default_handled_type<T>::value;
 
+template <typename ViewType>
+std::size_t get_size(const ViewType& v) {
+    std::size_t size = sizeof(typename ViewType::value_type);
+    for (int i = 0; i < ViewType::rank; size *= v.extent(i), ++i);
+    return size;
+}
+
+
 namespace Deepcopy {
     std::vector<void*> host_queue {};
     std::vector<void*> device_queue {};
@@ -102,15 +110,10 @@ namespace Deepcopy {
     }
 };
 
+template <typename data_type>
+using DeepcopyableViewType = Kokkos::View<data_type, Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
 
-template <typename ViewType>
-std::size_t get_size(const ViewType& v) {
-    std::size_t size = sizeof(typename ViewType::value_type);
-    for (int i = 0; i < ViewType::rank; size *= v.extent(i), ++i);
-    return size;
-}
-
-template <typename data_type, class DestSpace = DefaultSpace>
+template <typename data_type, class DestSpace>
 using DeepcopyableView = Kokkos::View<data_type, DestSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged>>;
 
 template <class DestSpace, typename ViewType>
@@ -134,16 +137,16 @@ DeepcopyableView<data_type, DestSpace> deepcopyable_view(std::size_t size, Args.
     return v;
 }
 
-
+// Fill methods to initialize arrays/views independently of memory space
 template <typename Lambda, typename ViewType, 
           std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::HostSpace>, bool> = true>
-void fill_view(ViewType& v, Lambda&& f) {
+__host__ __device__ void fill_view(ViewType& v, Lambda&& f) {
     f(v);
 }
 
 template <typename Lambda, typename ViewType,
           std::enable_if_t<std::is_same_v<typename ViewType::memory_space, Kokkos::CudaSpace>, bool> = true>
-void fill_view(ViewType& v, Lambda&& f) {
+__host__ __device__ void fill_view(ViewType& v, Lambda&& f) {
     typename ViewType::HostMirror h_v;
     h_v = Kokkos::create_mirror_view(v);
     f(h_v);
@@ -166,12 +169,16 @@ void fill_array(T* ptr, Lambda&& f, std::size_t array_size) {
 
 template <class DestSpace, typename T>
 T* empty_alloc() {
-    return static_cast<T*>(Kokkos::kokkos_malloc<DestSpace>(sizeof(T)));
+    T* ptr = static_cast<T*>(Kokkos::kokkos_malloc<DestSpace>(sizeof(T)));
+    Deepcopy::add_to_queue<DestSpace>(ptr);
+    return ptr;
 }
 
 template <class DestSpace, typename T>
 T* empty_alloc(const std::size_t n) {
-    return static_cast<T*>(Kokkos::kokkos_malloc<DestSpace>(sizeof(T) * n));
+    T* ptr = static_cast<T*>(Kokkos::kokkos_malloc<DestSpace>(sizeof(T) * n));
+    Deepcopy::add_to_queue<DestSpace>(ptr);
+    return ptr;
 }
 
 
