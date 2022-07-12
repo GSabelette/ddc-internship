@@ -76,7 +76,6 @@ namespace Deepcopy {
         std::vector<void*>::iterator pos = std::find(host_queue.begin(), host_queue.end(), ptr);
         if (pos != host_queue.end()) {
             host_queue.erase(pos);
-            printf("freed on CPU : %p\n", ptr);
             Kokkos::kokkos_free<MemorySpace>(ptr);   
         }
     }
@@ -87,7 +86,6 @@ namespace Deepcopy {
         std::vector<void*>::iterator pos = std::find(device_queue.begin(), device_queue.end(), ptr);
         if (pos != device_queue.end()) {
             device_queue.erase(pos);
-            printf("freed on GPU : %p\n", ptr);
             Kokkos::kokkos_free<MemorySpace>(ptr);   
         }
     }
@@ -192,6 +190,7 @@ void fill_array(T* ptr, Lambda&& f, std::size_t array_size) {
     cudaMemcpy(ptr, tmp, array_size, cudaMemcpyDefault);
 }
 
+
 template <class DestSpace, typename T>
 T* empty_alloc() {
     T* ptr = static_cast<T*>(Kokkos::kokkos_malloc<DestSpace>(sizeof(T)));
@@ -227,10 +226,27 @@ void deepcopy(T_dst* dst, const T_src& src) {
     shallow_copy<T_dst, T_src>(dst, src);
 }
 
+// View types.
+template <class DestSpace, typename T_dst, typename T_src = T_dst, 
+          std::enable_if_t<Kokkos::is_view<T_dst>::value, bool> = true>
+void deepcopy(T_dst* dst, const T_src& src) {
+    Kokkos::deep_copy(*dst, src);
+}
+
+// TODO : implement View-types deepcopy that also calls the constructor and allocates memory.
+
+// User types. 
+template <class DestSpace, typename T_dst, typename T_src,
+          std::enable_if_t<!is_default_handled_type_v<T_dst>, bool> = true>
+void deepcopy(T_dst* dst, const T_src& src) {
+    T_dst tmp(src);
+    shallow_copy<T_dst>(dst, tmp);
+}
+
 // Pointer types.
 template <class DestSpace, typename T_dst, typename T_src = T_dst, 
           std::enable_if_t<std::is_pointer<T_dst>::value, bool> = true>
-void deepcopy(T_dst dst, const T_src& src) {
+void deepcopy(T_dst* dst, const T_src& src) {
     using T_src_plain = std::remove_pointer_t<T_src>;
     using T_dst_plain = std::remove_pointer_t<T_dst>;
     
@@ -249,23 +265,8 @@ void deepcopy(T_dst* dst, const T_src& src, const std::size_t n) {
     shallow_copy<T_dst_plain, T_src_plain>(*dst, *src, n);
 }
 
-// View types.
-template <class DestSpace, typename T_dst, typename T_src = T_dst, 
-          std::enable_if_t<Kokkos::is_view<T_dst>::value, bool> = true>
-void deepcopy(T_dst* dst, const T_src& src) {
-    Kokkos::deep_copy(*dst, src);
-}
-
-// User types. 
-template <class DestSpace, typename T_dst, typename T_src,
-          std::enable_if_t<!is_default_handled_type_v<T_dst>, bool> = true>
-void deepcopy(T_dst* dst, const T_src& src) {
-    T_dst tmp(src);
-    shallow_copy<T_dst>(dst, tmp);
-}
-
 // Cloning.
-template <class DestSpace, typename T_dst, typename T_src = T_dst> 
+template <class DestSpace, typename T_dst, typename T_src> 
 T_dst* clone(const T_src& src) {
     T_dst* dst = empty_alloc<DestSpace, T_dst>();
     deepcopy<DestSpace, T_dst, T_src>(dst, src);

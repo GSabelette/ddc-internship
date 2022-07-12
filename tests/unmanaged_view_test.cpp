@@ -4,7 +4,7 @@
 template <class MemorySpace>
 struct SomeStruct {   
     template <class ViewSpace>
-    using view = DeepcopyableView<int*, ViewSpace>;
+    using view = Deepcopy::View<int*, ViewSpace>;
 
     int a;
     double* b;
@@ -15,7 +15,7 @@ struct SomeStruct {
     explicit SomeStruct(std::size_t n) 
         : a(n)
         , b(empty_alloc<MemorySpace, double>(n))
-        , c(deepcopyable_view_alloc<MemorySpace, int>(n * sizeof(int)), n)
+        , c(Deepcopy::view_alloc<MemorySpace, int>(n * sizeof(int)), n)
     {
         fill_array<MemorySpace>(b, [&n](auto array) {
             for (int i = 0; i < n; ++i) array[i] = 2*i;
@@ -26,7 +26,7 @@ struct SomeStruct {
     }
 
     template <class SrcSpace>
-    SomeStruct(const SomeStruct<SrcSpace> src) : c(deepcopyable_view_alloc<MemorySpace>(src.c), src.c.extent(0)) { //c(deepcopyable_view_alloc<MemorySpace>(src.c), src.c.extent(0)) {//
+    SomeStruct(const SomeStruct<SrcSpace> src) : c(Deepcopy::view_alloc<MemorySpace>(src.c), src.c.extent(0)) {
         deepcopy<MemorySpace, view<MemorySpace>, view<SrcSpace>>(&c, src.c);
         deepcopy<MemorySpace, double*>(&b, src.b, src.a);
         deepcopy<MemorySpace, int>(&a, src.a);
