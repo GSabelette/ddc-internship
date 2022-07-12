@@ -1,4 +1,5 @@
 #include "gof.hpp"
+#include <ctime>
 
 #define TO_DEAD_LOW     2
 #define TO_DEAD_HIGH    3
@@ -27,6 +28,11 @@ int compare_boards(Kokkos::View<bool**, L1, MS1>& host_view, typename Kokkos::Vi
 }
 
 int main(int argc, char** argv) {
+    time_t t = time(0);
+    char* dt = ctime(&t);
+
+    std::cout << "The local date and time is: " << dt << "\n";
+
     Kokkos::initialize(); {
     Cell_Arrays_Portable<Kokkos::CudaSpace, Kokkos::LayoutLeft> portable_cuda(BOARD_SIZE, BOARD_SIZE, TO_DEAD_LOW, TO_DEAD_HIGH, TO_LIVE);
     Cell_Arrays_Portable<Kokkos::HostSpace, Kokkos::LayoutRight> portable_host(BOARD_SIZE, BOARD_SIZE, TO_DEAD_LOW, TO_DEAD_HIGH, TO_LIVE);

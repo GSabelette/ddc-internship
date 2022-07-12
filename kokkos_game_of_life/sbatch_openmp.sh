@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=slurm_openmp
 #SBATCH --time=01:00:00
-#SBATCH --array=1-40%5
+#SBATCH --array=1-40%1
 #SBATCH --output=../slurm_out/openmp.out
 #SBATCH --error=../err/%acpu.err
-#SBATCH --mem=4G
+#SBATCH --mem=10G
 #SBATCH --partition=cpu_med
 
 set -e

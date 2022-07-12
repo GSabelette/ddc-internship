@@ -25,19 +25,19 @@ typedef Kokkos::LayoutRight Layout;
 #define RANGE_MAX       16384
 #endif
 
-static void BM_naive(benchmark::State& state) {
-    Cell_Arrays_Naive<MemSpace, Layout> cell_arrays(state.range(0)+1, state.range(0)+1, TO_DEAD_LOW, TO_DEAD_HIGH, TO_LIVE);
+// static void BM_naive(benchmark::State& state) {
+//     Cell_Arrays_Naive<MemSpace, Layout> cell_arrays(state.range(0)+1, state.range(0)+1, TO_DEAD_LOW, TO_DEAD_HIGH, TO_LIVE);
 
-    for (auto _ : state) {
-        auto start = std::chrono::high_resolution_clock::now();
-        cell_arrays.update_steps(NREPEATS);
-        Kokkos::fence();
-        auto end = std::chrono::high_resolution_clock::now();
-        auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-        state.SetIterationTime(elapsed_seconds.count());
-    }
-}
-BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(RANGE_MIN, RANGE_MAX)->UseManualTime();
+//     for (auto _ : state) {
+//         auto start = std::chrono::high_resolution_clock::now();
+//         cell_arrays.update_steps(NREPEATS);
+//         Kokkos::fence();
+//         auto end = std::chrono::high_resolution_clock::now();
+//         auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+//         state.SetIterationTime(elapsed_seconds.count());
+//     }
+// }
+// BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(RANGE_MIN, RANGE_MAX)->UseManualTime();
 
 static void BM_portable(benchmark::State& state) {
     Cell_Arrays_Portable<MemSpace, Layout> cell_arrays(state.range(0)+1, state.range(0)+1, TO_DEAD_LOW, TO_DEAD_HIGH, TO_LIVE);

@@ -141,7 +141,7 @@ struct Cell_Arrays_Naive {
 
     void sync_host() {
         Kokkos::deep_copy(h_status, status);
-        #if defined(__CUDA_ARCH__)
+        #if CUDA_DEVICE != 0
         cudaMemcpy(nb_alive, dev_nb_alive, sizeof(int), cudaMemcpyDeviceToHost);
         #else
         *nb_alive = *dev_nb_alive;
