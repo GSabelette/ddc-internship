@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(tests CXX)
+project(global_variables CXX)
 
 add_subdirectory(vendor/kokkos)
 add_executable(unmanaged_view_test unmanaged_view_test.cpp)
